@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Adventure with Storyboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const storySteps = [
+      {
+        type: 'text',
+        content: 'You wake up to an alarm. What do you do?',
+        actions: [
+          { label: 'Dismiss alarm', nextStep: 1 },
+          { label: 'Wake up', nextStep: 2 },
+        ],
+      },
+      {
+        type: 'gameover',
+        content: 'Game Over: You missed the chem final',
+      },
+      {
+        type: 'video',
+        content: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        nextStep: 3,
+      },
+      {
+        type: 'text',
+        content: 'What do you do after waking up?',
+        actions: [
+          { label: 'Get ready for school', nextStep: 4 },
+          { label: 'Hop on the computer', nextStep: 5 },
+        ],
+      },
+      {
+        type: 'video',
+        content: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        nextStep: 6,
+      },
+      {
+        type: 'gameover',
+        content: 'Game Over: You played too much and missed the chem final',
+      },
+      {
+        type: 'text',
+        content: 'Where do you go?',
+        actions: [
+          { label: 'Go to class', nextStep: 7 },
+          { label: 'Go to gas station', nextStep: 8 },
+        ],
+      },
+      {
+        type: 'video',
+        content: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        nextStep: 9,
+      },
+      {
+        type: 'gameover',
+        content: 'Game Over: You got locked out of school',
+      },
+      {
+        type: 'text',
+        content: 'Choose what to do next in 2nd period',
+        actions: [
+          { label: 'Go to 2nd period', nextStep: 10 },
+          { label: 'Skip class', nextStep: 11 },
+        ],
+      },
+      {
+        type: 'video',
+        content: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        nextStep: 12,
+      },
+      {
+        type: 'gameover',
+        content: 'Game Over: You were marked absent',
+      },
+      {
+        type: 'text',
+        content: 'After school, what do you do?',
+        actions: [
+          { label: 'Do homework', nextStep: 15 },
+          { label: 'Play Solitaire', nextStep: 13 },
+          { label: 'Go out with friends', nextStep: 16 },
+        ],
+      },
+      {
+        type: 'text',
+        content: 'Which Solitaire difficulty do you choose?',
+        actions: [
+          { label: 'Easy', nextStep: 14 },
+          { label: 'Medium', nextStep: 14 },
+          { label: 'Hard', nextStep: 14 },
+          { label: 'Expert', nextStep: 14 },
+        ],
+      },
+      {
+        type: 'text',
+        content: 'You play Solitaire for hours. Feeling satisfied?',
+        actions: [
+          { label: 'Yes, relaxed and ready for tomorrow', nextStep: 19 },
+          { label: 'No, wasted too much time', nextStep: 20 },
+        ],
+      },
+      {
+        type: 'text',
+        content: 'You start your homework. Do you focus well?',
+        actions: [
+          { label: 'Yes, focus and finish early', nextStep: 17 },
+          { label: 'Get distracted by phone', nextStep: 18 },
+        ],
+      },
+      {
+        type: 'text',
+        content: 'You go out with friends. What do you do?',
+        actions: [
+          { label: 'Grab dinner and chat', nextStep: 21 },
+          { label: 'Party late and skip sleep', nextStep: 22 },
+        ],
+      },
+      {
+        type: 'text',
+        content: 'You finished homework early! Want to review or relax?',
+        actions: [
+          { label: 'Review notes', nextStep: 23 },
+          { label: 'Relax and watch a movie', nextStep: 24 },
+        ],
+      },
+      {
+        type: 'gameover',
+        content: 'Game Over: You got distracted and didn’t finish homework. Bad grade tomorrow.',
+      },
+      {
+        type: 'text',
+        content: 'You feel ready and rested. Good night!',
+      },
+      {
+        type: 'gameover',
+        content: 'Game Over: You stayed up too late playing games and are exhausted tomorrow.',
+      },
+      {
+        type: 'text',
+        content: 'Dinner was fun. You head home early. Ready to sleep?',
+        actions: [
+          { label: 'Yes, go to bed', nextStep: 25 },
+          { label: 'No, scroll social media', nextStep: 26 },
+        ],
+      },
+      {
+        type: 'gameover',
+        content: 'Game Over: You partied too late and failed your chem final.',
+      },
+      {
+        type: 'text',
+        content: 'You review your notes and feel confident for tomorrow. Sleep well!',
+      },
+      {
+        type: 'text',
+        content: 'You relax and watch a movie before bed. Ready for a fresh start tomorrow!',
+      },
+      {
+        type: 'text',
+        content: 'You go to bed early and wake up refreshed. You survived the day well!',
+      },
+      {
+        type: 'gameover',
+        content: 'Game Over: You stayed up scrolling and missed the final exam.',
+      },
+    ];
+
+    function FlowchartNode({ step, index }) {
+      const isText = step.type === 'text';
+      const isVideo = step.type === 'video';
+      const isGameOver = step.type === 'gameover';
+
+      return (
+        <div className={`relative p-4 mb-4 w-64 ${isText ? 'border-2 border-blue-500 rounded' : isVideo ? 'border-2 border-green-500 rounded-full' : 'border-2 border-red-500 rounded postion: relative; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)'}`}>
+          <h3 className="font-bold text-white">Step {index}</h3>
+          <p className="text-white text-sm">{step.content}</p>
+          {isText && step.actions && (
+            <ul className="mt-2 text-sm text-white">
+              {step.actions.map((action, i) => (
+                <li key={i}>→ {action.label} (to Step {action.nextStep})</li>
+              ))}
+            </ul>
+          )}
+          {isVideo && <p className="text-white text-sm">→ Next: Step {step.nextStep}</p>}
+          {isGameOver && <p className="text-white text-sm">→ Restart</p>}
+        </div>
+      );
+    }
+
+    function Storyboard() {
+      return (
+        <div className="w-full p-4 overflow-x-auto">
+          <h2 className="text-2xl text-white mb-4">Storyboard Flowchart</h2>
+          <div className="flex flex-col items-start">
+            {storySteps.map((step, index) => (
+              <FlowchartNode key={index} step={step} index={index} />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function Game() {
+      const [stepIndex, setStepIndex] = React.useState(0);
+      const [showNext, setShowNext] = React.useState(false);
+      const [isMuted, setIsMuted] = React.useState(false);
+      const videoRef = React.useRef(null);
+
+      const step = storySteps[stepIndex];
+
+      React.useEffect(() => {
+        let timer;
+        if (step.type === 'video') {
+          setShowNext(false);
+          timer = setTimeout(() => {
+            setShowNext(true);
+          }, 5000);
+        }
+        return () => clearTimeout(timer);
+      }, [stepIndex, step.type]);
+
+      const handleNext = () => {
+        if (step.nextStep !== undefined) {
+          setStepIndex(step.nextStep);
+        }
+      };
+
+      const handleAction = (nextStep) => {
+        setStepIndex(nextStep);
+      };
+
+      const restart = () => {
+        setStepIndex(0);
+      };
+
+      if (!step) return <div>Loading...</div>;
+
+      return (
+        <div className="w-full p-4 flex flex-col items-center">
+          <h2 className="text-2xl text-white mb-4">Play the Game</h2>
+          {step.type === 'gameover' && (
+            <div className="text-center">
+              <h1 className="text-3xl text-white mb-8">{step.content}</h1>
+              <button
+                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
+                onClick={restart}
+              >
+                Restart
+              </button>
+            </div>
+          )}
+          {step.type === 'text' && (
+            <div className="text-center">
+              <h1 className="text-3xl text-white mb-8">{step.content}</h1>
+              <div className="flex flex-col gap-4">
+                {step.actions &&
+                  step.actions.map((action, index) => (
+                    <button
+                      key={index}
+                      className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
+                      onClick={() => handleAction(action.nextStep)}
+                    >
+                      {action.label}
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
+          {step.type === 'video' && (
+            <div className="flex flex-col items-center">
+              <video
+                ref={videoRef}
+                src={step.content}
+                className="w-[90%] max-w-4xl rounded-xl"
+                autoPlay
+                muted={isMuted}
+                onError={(e) => console.log('Video error:', e)}
+              />
+              {showNext && (
+                <button
+                  className="mt-4 bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-800"
+                  onClick={handleNext}
+                >
+                  Next
+                </button>
+              )}
+            </div>
+          )}
+          <div className="mt-4">
+            <button
+              className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-600"
+              onClick={() => setIsMuted(!isMuted)}
+            >
+              {isMuted ? 'Sound Off' : 'Sound On'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      return (
+        <div className="min-h-screen bg-black flex flex-col lg:flex-row">
+          <div className="lg:w-1/2 border-r border-gray-700">
+            <Storyboard />
+          </div>
+          <div className="lg:w-1/2">
+            <Game />
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
